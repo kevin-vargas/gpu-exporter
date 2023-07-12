@@ -2,7 +2,7 @@ version: "3"
 services: 
   consul:
     image: hashicorp/consul:1.10.0
-    container_name: consul-server
+    container_name: consul
     restart: always
     volumes:
      - ./infra/consul/server.json:/consul/config/server.json:ro
@@ -14,6 +14,8 @@ services:
     environment:
       - CONSUL_BIND_INTERFACE=eth0
       - CONSUL_CLIENT_INTERFACE=eth0
+    networks:
+      - backend
   prometheus:
     container_name: prometheus
     image: prom/prometheus:latest

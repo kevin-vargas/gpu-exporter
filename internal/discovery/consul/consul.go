@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	id = "nvidia_gpu_exporter"
+	id = "gpu_exporter"
 )
 
 var (
