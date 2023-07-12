@@ -1,0 +1,42 @@
+version: "3"
+services: 
+  consul:
+    image: hashicorp/consul:1.10.0
+    container_name: consul-server
+    restart: always
+    volumes:
+     - ./infra/consul/server.json:/consul/config/server.json:ro
+    ports:
+      - 8500:8500
+      - 8600:8600/tcp
+      - 8600:8600/udp
+    command: "agent"
+    environment:
+      - CONSUL_BIND_INTERFACE=eth0
+      - CONSUL_CLIENT_INTERFACE=eth0
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    volumes:
+            - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    networks:
+      - backend
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    volumes:
+            - ./infra/grafana/grafana.ini:/etc/grafana/grafana.ini
+            - ./infra/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml
+            - ./infra/grafana/data:/var/lib/grafana
+    ports:
+      - 3000:3000
+    networks:
+      - backend
+      - dmz
+networks:
+  backend:
+    driver: bridge
+  dmz:
+    driver: bridge
